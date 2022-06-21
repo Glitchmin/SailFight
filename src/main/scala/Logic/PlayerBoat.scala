@@ -11,10 +11,9 @@ object PlayerBoat {
 }
 
 
-class PlayerBoat (private val keyPolling: KeyPolling,
-                  private val keyMap: PlayerControlsKeymap,
-                  private var speed: Double, private var heading: Double, var position: Vector2d,
-                  private var steerDeflection: Double = 0.0, private var lastTimeEval: Int = 0){
+class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: PlayerControlsKeymap,var speed: Double,
+                  var heading: Double, var position: Vector2d, private var steerDeflection: Double = 0.0)
+  extends MovableObject {
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
       position += Vector2d(0, timeElapsed / 1E6)
@@ -35,9 +34,8 @@ class PlayerBoat (private val keyPolling: KeyPolling,
     nanoTime / 1e9
   }
 
-  def calcPosition(nanoTimeElapsed: Long): Unit = {
-    val rad = toRadians(heading)
-    position += Vector2d((nanoTimeElapsed * sin(rad)) / 1E7, -(nanoTimeElapsed * cos(rad)) / 1E7)
+  override def calcPosition(nanoTimeElapsed: Long): Unit = {
+    super.calcPosition(nanoTimeElapsed)
     heading += steerDeflection * nanoSecondIntoSecond(nanoTimeElapsed)
   }
 

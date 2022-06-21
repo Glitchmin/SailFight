@@ -39,6 +39,8 @@ object ScalaFXHelloWorld extends JFXApp3 {
   }
 
   def execute(): Unit = {
-    MainLoop.start()
+    val mainLoop: MainLoop = new MainLoop()
+    mainLoop.addObserver(mapGui)
+    mainLoop.start()
   }
 }

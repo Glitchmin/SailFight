@@ -14,27 +14,31 @@ import scalafx.stage.Screen
 
 object ScalaFXHelloWorld extends JFXApp3 {
   val pane: Pane = new Pane()
-  val playerCircle = new Circle()
+  val mapGui: MapGui = new MapGui(pane)
+
   override def start(): Unit = {
     stage = new JFXApp3.PrimaryStage {
       //    initStyle(StageStyle.Unified)
       title = "ScalaFX Hello World"
-      width = Screen.primary.getBounds.getWidth*0.9
-      height = Screen.primary.getBounds.getHeight*0.9
-      val playerBoat1 = new PlayerBoat(0.0,0.0,new Vector2d(0,0),0.0,0)
+      width = Screen.primary.getBounds.getWidth * 0.9
+      height = Screen.primary.getBounds.getHeight * 0.9
+//      val playerBoat1 = new PlayerBoat(0.0, 0.0, new Vector2d(0, 0), 0.0, 0)
 
-      playerCircle.radius = 10
-      playerCircle.centerX = 20
-      playerCircle.centerY = 20
-      pane.children.add(playerCircle)
       scene = new Scene {
         fill = Color.rgb(80, 150, 250)
         content = new HBox {
           children = Seq(pane)
         }
       }
-      //MainLoop.player1Boat = playerBoat1
+      //MainLoop.gi player1Boat = playerBoat1
       //MainLoop.start()
     }
+//    execute()
+    val executionThread: Thread = new Thread(() => execute())
+    executionThread.start()
+  }
+
+  def execute(): Unit = {
+    MainLoop.start()
   }
 }

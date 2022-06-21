@@ -10,7 +10,7 @@ class MainLoop extends Subject[MainLoop] {
     while (true) {
       player1Boat.calcPosition()
       notifyObservers()
-      sleep(100)
+//      sleep(100)
     }
   }
 }

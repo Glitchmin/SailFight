@@ -6,7 +6,7 @@ import scalafx.scene.input.KeyCode
 import scala.math.{cos, max, min, sin, toRadians}
 
 object PlayerBoat {
-  val steerDeflectionSpeed = 10.0; //degrees per second
+  val steerDeflectionSpeed = 90.0; //degrees per second
   val maxDeflection = 60.0; //degrees
 }
 
@@ -17,16 +17,16 @@ class PlayerBoat (private val keyPolling: KeyPolling,
                   private var steerDeflection: Double = 0.0, private var lastTimeEval: Int = 0){
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
-      position += Vector2d(0, timeElapsed / 1E7)
+      position += Vector2d(0, timeElapsed / 1E6)
     }
     if (keyPolling.isDown(keyMap.forward)) {
-      position += Vector2d(0, -timeElapsed / 1E7)
+      position += Vector2d(0, -timeElapsed / 1E6)
     }
     if (keyPolling.isDown(keyMap.steerLeft)) {
-      position += Vector2d(-timeElapsed / 1E7, 0)
+      deflectSteerLeft(timeElapsed)
     }
     if (keyPolling.isDown(keyMap.steerRight)) {
-      position += Vector2d(timeElapsed / 1E7, 0)
+      deflectSteerRight(timeElapsed)
     }
 
   }
@@ -37,7 +37,7 @@ class PlayerBoat (private val keyPolling: KeyPolling,
 
   def calcPosition(nanoTimeElapsed: Long): Unit = {
     val rad = toRadians(heading)
-    position += Vector2d((nanoTimeElapsed * sin(rad)) / 1E8, -(nanoTimeElapsed * cos(rad)) / 1E8)
+    position += Vector2d((nanoTimeElapsed * sin(rad)) / 1E7, -(nanoTimeElapsed * cos(rad)) / 1E7)
     heading += steerDeflection * nanoSecondIntoSecond(nanoTimeElapsed)
   }
 

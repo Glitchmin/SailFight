@@ -12,7 +12,7 @@ class MainLoop extends Subject[MainLoop] {
 
   private val playersKeymaps = Array(PlayerControlsKeymap(KeyCode.Right, KeyCode.Left, KeyCode.Up, KeyCode.Down))
   var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0),
-    0.0, 0.0, Vector2d(0, 0), 0.0, 0))
+    2.0, 0.0, Vector2d(100,100), 0.0, 0))
 
   def init(scene: Scene): Unit = {
     keys.pollScene(scene)

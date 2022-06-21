@@ -8,13 +8,15 @@ import scalafx.Includes._
 
 class MainLoop extends Subject[MainLoop] {
   val keys: KeyPolling = KeyPolling.getInstance
-  var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys,0.0, 0.0, Vector2d(0, 0), 0.0, 0))
   var lastUpdateTime: Long = System.nanoTime()
+
+  private val playersKeymaps = Array(PlayerControlsKeymap(KeyCode.Right, KeyCode.Left, KeyCode.Up, KeyCode.Down))
+  var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0),
+    0.0, 0.0, Vector2d(0, 0), 0.0, 0))
 
   def init(scene: Scene): Unit = {
     keys.pollScene(scene)
   }
-
 
 
   def start(): Unit = {

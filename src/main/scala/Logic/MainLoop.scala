@@ -1,6 +1,5 @@
 package Logic
 
-import java.lang.Thread.sleep
 
 class MainLoop extends Subject[MainLoop] {
   var player1Boat: PlayerBoat = new PlayerBoat(0.0, 0.0, Vector2d(0, 0), 0.0, 0)
@@ -10,7 +9,6 @@ class MainLoop extends Subject[MainLoop] {
     while (true) {
       player1Boat.calcPosition()
       notifyObservers()
-//      sleep(100)
     }
   }
 }

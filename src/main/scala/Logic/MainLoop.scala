@@ -26,7 +26,7 @@ class MainLoop extends Subject[MainLoop] {
       lastUpdateTime = now
       players.foreach(_.handleInput(timeElapsed))
       players.foreach(_.calcPosition(timeElapsed))
-      notifyObservers()
+      notifyObservers(this)
     }
   }
 }

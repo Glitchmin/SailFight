@@ -32,6 +32,5 @@ class MapGui(val pane: Pane) extends Observer[MainLoop] {
     playerCircle.x = subject.players(0).position.x
     playerCircle.y = subject.players(0).position.y
     //    playerCircle.radius =  playerCircle.radius() + 0.01
-    println("updated")
   }
 }

@@ -10,5 +10,5 @@ trait Subject[S] {
 
   def addObserver(observer: Observer[S]): Unit = observers = observer :: observers
 
-  def notifyObservers(): Unit = observers.foreach(_.receiveUpdate(this))
+  def notifyObservers(subject: S): Unit = observers.foreach(_.receiveUpdate(subject))
 }

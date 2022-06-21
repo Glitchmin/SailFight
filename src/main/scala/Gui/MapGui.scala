@@ -25,8 +25,9 @@ class MapGui(val pane: Pane) extends Observer[MainLoop] {
     }
     lastUpdateTime = now
 
-    playerCircle.centerX = subject.player1Boat.position.x
-    playerCircle.centerY = subject.player1Boat.position.y
+    //TODO: make scallable
+    playerCircle.centerX = subject.players(0).position.x
+    playerCircle.centerY = subject.players(0).position.y
     //    playerCircle.radius =  playerCircle.radius() + 0.01
     println("updated")
   }

@@ -1,6 +1,8 @@
 package Logic
 
-import Gui.KeyPolling
+import Gui.{Drawable, ImageLoader, KeyPolling}
+import scalafx.scene.Node
+import scalafx.scene.image.{Image, ImageView}
 import scalafx.scene.input.KeyCode
 
 import scala.math.{cos, max, min, sin, toRadians}
@@ -11,10 +13,10 @@ object PlayerBoat {
 }
 
 
-class PlayerBoat (private val keyPolling: KeyPolling,
-                  private val keyMap: PlayerControlsKeymap,
-                  private var speed: Double, private var heading: Double, var position: Vector2d,
-                  private var steerDeflection: Double = 0.0, private var lastTimeEval: Int = 0){
+class PlayerBoat(private val keyPolling: KeyPolling,
+                 private val keyMap: PlayerControlsKeymap,
+                 private var speed: Double, private var heading: Double, var position: Vector2d,
+                 private var steerDeflection: Double = 0.0, private var lastTimeEval: Int = 0) extends Drawable {
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
       position += Vector2d(0, timeElapsed / 1E6)
@@ -56,4 +58,18 @@ class PlayerBoat (private val keyPolling: KeyPolling,
     steerDeflection
   }
 
+  var hullImage: ImageView = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
+  hullImage.scaleX = 0.2
+  hullImage.scaleY = 0.2
+
+
+  override def getNodes(): List[Node] = {
+    List[Node](hullImage)
+  }
+
+  override def refresh(): Unit = {
+    hullImage.x = position.x
+    hullImage.y = position.y
+  }
+  refresh()
 }

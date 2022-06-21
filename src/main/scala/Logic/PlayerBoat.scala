@@ -6,13 +6,15 @@ import scalafx.scene.input.KeyCode
 import scala.math.{cos, max, min, sin, toRadians}
 
 object PlayerBoat {
-  val steerDeflectionSpeed = 90.0; //degrees per second
-  val maxDeflection = 60.0; //degrees
+  val steerDeflectionSpeed = 90.0 //degrees per second
+  val maxDeflection = 60.0 //degrees
+  val startingHP = 100;
 }
 
 
 class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: PlayerControlsKeymap,var speed: Double,
-                  var heading: Double, var position: Vector2d, private var steerDeflection: Double = 0.0)
+                  var heading: Double, var position: Vector2d, private var steerDeflection: Double = 0.0,
+                  private var HP: Int = PlayerBoat.startingHP)
   extends MovableObject {
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
@@ -27,7 +29,10 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
     if (keyPolling.isDown(keyMap.steerRight)) {
       deflectSteerRight(timeElapsed)
     }
+  }
 
+  def subtractFromHP(dmg: Int): Unit ={
+    HP -= dmg
   }
 
   private def nanoSecondIntoSecond(nanoTime: Long): Double = {

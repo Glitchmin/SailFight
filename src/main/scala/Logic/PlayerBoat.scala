@@ -2,8 +2,12 @@ package Logic
 
 import Gui.KeyPolling
 import Logic.PlayerBoat.{speedChangePerSec, steerDeflectionSpeed}
+import Gui.{Drawable, ImageLoader, KeyPolling}
+import scalafx.scene.Node
+import scalafx.scene.image.{Image, ImageView}
+import scalafx.scene.input.KeyCode
 
-import scala.math.{max, min, sqrt}
+import scala.math.{cos, max, min, sin, toRadians}
 
 object PlayerBoat {
   val steerDeflectionSpeed = 10.0 //degrees per second
@@ -20,6 +24,10 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
                   var heading: Double, var position: Vector2d, private var steerDeflection: Double = 0.0,
                   private var HP: Int = PlayerBoat.startingHP)
   extends MovableObject {
+class PlayerBoat(private val keyPolling: KeyPolling,
+                 private val keyMap: PlayerControlsKeymap,
+                 private var speed: Double, private var heading: Double, var position: Vector2d,
+                 private var steerDeflection: Double = 0.0, private var lastTimeEval: Int = 0) extends Drawable {
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
       speed -= nanoSecondIntoSecond(timeElapsed)*speedChangePerSec
@@ -90,4 +98,18 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
     steerDeflection
   }
 
+  var hullImage: ImageView = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
+  hullImage.scaleX = 0.2
+  hullImage.scaleY = 0.2
+
+
+  override def getNodes(): List[Node] = {
+    List[Node](hullImage)
+  }
+
+  override def refresh(): Unit = {
+    hullImage.x = position.x
+    hullImage.y = position.y
+  }
+  refresh()
 }

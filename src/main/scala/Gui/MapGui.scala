@@ -2,6 +2,7 @@ package Gui
 
 import Gui.ScalaFXHelloWorld.pane
 import Logic.{MainLoop, Observer}
+import scalafx.scene.image.ImageView
 
 import java.util.concurrent.TimeUnit
 import scalafx.scene.layout.Pane
@@ -9,10 +10,12 @@ import scalafx.scene.shape.Circle
 
 class MapGui(val pane: Pane) extends Observer[MainLoop] {
   val refreshTime: Double = 1.0 / 30 * TimeUnit.NANOSECONDS.convert(1, TimeUnit.SECONDS)
-  val playerCircle = new Circle()
-  playerCircle.radius = 10
-  playerCircle.centerX = 20
-  playerCircle.centerY = 20
+  val playerCircle = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
+  playerCircle.scaleX = 0.1
+  playerCircle.scaleY = 0.1
+//  playerCircle.radius = 10
+//  playerCircle.centerX = 20
+//  playerCircle.centerY = 20
   pane.children.add(playerCircle)
 
   var lastUpdateTime: Long = System.nanoTime()
@@ -26,8 +29,8 @@ class MapGui(val pane: Pane) extends Observer[MainLoop] {
     lastUpdateTime = now
 
     //TODO: make scallable
-    playerCircle.centerX = subject.players(0).position.x
-    playerCircle.centerY = subject.players(0).position.y
+    playerCircle.x = subject.players(0).position.x
+    playerCircle.y = subject.players(0).position.y
     //    playerCircle.radius =  playerCircle.radius() + 0.01
   }
 }

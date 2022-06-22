@@ -9,19 +9,20 @@ import scalafx.scene.shape.{Circle, Rectangle, Shape}
 import scalafx.stage.Stage
 
 import scala.collection.mutable
+import scala.math.random
 
 class MainLoop extends GuiSubject with ProjectileObserver {
   val keys: KeyPolling = KeyPolling.getInstance
   var lastUpdateTime: Long = System.nanoTime()
-
+  private var baseHue: Double = random()*360.0
   private val playersKeymaps = Array(PlayerControlsKeymap(KeyCode.Right, KeyCode.Left, KeyCode.Up, KeyCode.Down,
                                         KeyCode.M, KeyCode.N),
                                     PlayerControlsKeymap(KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S,
                                       KeyCode.V, KeyCode.C))
   private var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0), Vector2d(0.05, 0.02),
-    2.0, 90.0, Vector2d(100,100), 0.0),
+    2.0, 90.0, Vector2d(100,100), 0.0, hue=baseHue),
     new PlayerBoat(keys, playersKeymaps(1), Vector2d(0.95-0.03, 0.02),
-      2.0, 180.0+90.0, Vector2d(700,300), 0.0))
+      2.0, 180.0+90.0, Vector2d(700,300), 0.0, hue=(baseHue+180)%360.0))
   private var projectiles = mutable.HashSet[Projectile]()
   players.foreach(_.addAddProjectileObserver(this))
 

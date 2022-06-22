@@ -5,6 +5,8 @@ import Gui.KeyPolling
 import scalafx.scene.Scene
 import scalafx.scene.input.KeyCode
 import scalafx.Includes._
+import scalafx.scene.shape.{Circle, Rectangle, Shape}
+import scalafx.stage.Stage
 
 import scala.collection.mutable
 
@@ -28,6 +30,14 @@ class MainLoop extends GuiSubject with ProjectileObserver {
     players.foreach(player => notifyAddDrawable(player))
   }
 
+  private def checkProjectiles(): Unit = {
+    for (p <- projectiles; pl <- players){
+      if(pl.hullImage.getBoundsInParent.intersects(p.circle.getBoundsInParent) && pl != p.parent){
+        println("intersection", pl.position, p.position)
+        p.dealDmg(pl)
+      }
+    }
+  }
 
   def start(): Unit = {
     while (true) {
@@ -38,6 +48,7 @@ class MainLoop extends GuiSubject with ProjectileObserver {
       players.foreach(_.calcPosition(timeElapsed))
       projectiles.foreach(_.calcPosition(timeElapsed))
       notifyRefresh()
+      checkProjectiles()
     }
   }
 

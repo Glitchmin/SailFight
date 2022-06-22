@@ -5,7 +5,8 @@ import Logic.{MovableObject, PlayerBoat, Vector2d}
 import scalafx.scene.Node
 import scalafx.scene.shape.Circle
 
-class Projectile (var speed: Double, var heading: Double, var position: Vector2d, var dmg: Int) extends MovableObject with Drawable {
+class Projectile (var speed: Double, var heading: Double, var position: Vector2d, var dmg: Int,
+                  var parent: PlayerBoat) extends MovableObject with Drawable {
   def dealDmg(playerBoat: PlayerBoat): Unit ={
     playerBoat.subtractFromHP(dmg)
   }

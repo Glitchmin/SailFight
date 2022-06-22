@@ -50,12 +50,12 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     val angle = toDegrees(asin(pow(PlayerBoat.projectileSpeed,2)/(pow(PlayerBoat.projectileSpeed,2) + pow(speed,2))))
     if (keyPolling.isDown(keyMap.shootRight) && rightCannonTimer == 0L) {
       notifyAddProjectile(new Projectile(PlayerBoat.projectileSpeed,
-        heading + angle, position, PlayerBoat.projectileDamage))
+        heading + angle, position, PlayerBoat.projectileDamage,this))
       rightCannonTimer = (1e9 * PlayerBoat.reloadTime).toLong
     }
     if (keyPolling.isDown(keyMap.shootLeft) && leftCannonTimer == 0L) {
       notifyAddProjectile(new Projectile(PlayerBoat.projectileSpeed,
-        heading - angle + 360.0, position, PlayerBoat.projectileDamage))
+        heading - angle + 360.0, position, PlayerBoat.projectileDamage,this))
       leftCannonTimer = (1e9 * PlayerBoat.reloadTime).toLong
     }
     leftCannonTimer = max(leftCannonTimer-timeElapsed,0)

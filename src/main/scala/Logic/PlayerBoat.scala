@@ -1,7 +1,6 @@
 package Logic
 
-import Gui.{Drawable, ImageLoader, KeyPolling}
-
+import Gui.{Drawable, ImageLoader, KeyPolling, ScalaFXHelloWorld}
 import Logic.Projectile.{AddProjectileSubject, Projectile}
 import scalafx.scene.Node
 import scalafx.scene.image.ImageView
@@ -77,6 +76,9 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     } else if (speed < 0) {
       heading -= steerDeflection * nanoSecondIntoSecond(nanoTimeElapsed) * sqrt(-speed)
     }
+
+    position = Vector2d((position.x + ScalaFXHelloWorld.stage.getWidth) % ScalaFXHelloWorld.stage.getWidth,
+      (position.y + ScalaFXHelloWorld.stage.getHeight) % ScalaFXHelloWorld.stage.getHeight)
   }
 
 

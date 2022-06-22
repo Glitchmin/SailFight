@@ -1,12 +1,12 @@
 package Logic
 
 import Gui.{Drawable, ImageLoader, KeyPolling}
-import Logic.PlayerBoat.{reloadTime, speedChangePerSec}
+
 import Logic.Projectile.{AddProjectileSubject, Projectile}
 import scalafx.scene.Node
 import scalafx.scene.image.ImageView
 
-import scala.math.{asin, max, min, pow, sqrt, toDegrees}
+import scala.math.{asin, cos, max, min, pow, sin, sqrt, toDegrees, toRadians}
 
 object PlayerBoat {
   val steerDeflectionSpeed = 30.0 //degrees per second
@@ -30,11 +30,11 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
 
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
-      speed -= nanoSecondIntoSecond(timeElapsed) * speedChangePerSec
+      speed -= nanoSecondIntoSecond(timeElapsed) * PlayerBoat.speedChangePerSec
       speed = max(speed, PlayerBoat.maxBackwardSpeed)
     }
     if (keyPolling.isDown(keyMap.forward)) {
-      speed += nanoSecondIntoSecond(timeElapsed) * speedChangePerSec
+      speed += nanoSecondIntoSecond(timeElapsed) * PlayerBoat.speedChangePerSec
       speed = min(speed, PlayerBoat.maxForwardSpeed)
     }
     if (keyPolling.isDown(keyMap.steerLeft)) {
@@ -105,19 +105,25 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     steerDeflection
   }
 
-  var hullImage: ImageView = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
+  val hullImage: ImageView = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
   hullImage.scaleX = 0.2
   hullImage.scaleY = 0.2
+  private val steeringRudder = new ImageView(ImageLoader.getImage("src/main/resources/lightsaber.png"))
+  steeringRudder.scaleX = 0.2
+  steeringRudder.scaleY = 0.2
 
 
   override def getNodes: List[Node] = {
-    List[Node](hullImage)
+    List[Node](hullImage, steeringRudder)
   }
 
   override def refresh(): Unit = {
     hullImage.x = position.x - hullImage.getImage.getWidth  / 2
     hullImage.y = position.y - hullImage.getImage.getHeight / 2
     hullImage.setRotate(heading)
+    steeringRudder.x = position.x - steeringRudder.getImage.getWidth  / 2 + hullImage.getScaleY * hullImage.getImage.getHeight / 2 * sin(toRadians(-heading))
+    steeringRudder.y = position.y - steeringRudder.getImage.getHeight / 2 + hullImage.getScaleY * hullImage.getImage.getHeight / 2 * cos(toRadians(-heading))
+    steeringRudder.setRotate(heading-steerDeflection+180)
   }
 
   refresh()

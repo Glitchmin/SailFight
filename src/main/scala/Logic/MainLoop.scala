@@ -13,9 +13,13 @@ class MainLoop extends GuiSubject with ProjectileObserver {
   var lastUpdateTime: Long = System.nanoTime()
 
   private val playersKeymaps = Array(PlayerControlsKeymap(KeyCode.Right, KeyCode.Left, KeyCode.Up, KeyCode.Down,
-    KeyCode.M, KeyCode.N))
+                                        KeyCode.M, KeyCode.N),
+                                    PlayerControlsKeymap(KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S,
+                                      KeyCode.V, KeyCode.C))
   private var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0),
-    2.0, 90.0, Vector2d(100,100), 0.0, 0))
+    2.0, 90.0, Vector2d(100,100), 0.0, 0),
+    new PlayerBoat(keys, playersKeymaps(1),
+      2.0, 180.0+90.0, Vector2d(700,300), 0.0, 0))
   private var projectiles = mutable.HashSet[Projectile]()
   players.foreach(_.addAddProjectileObserver(this))
 

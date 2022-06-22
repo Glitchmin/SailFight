@@ -1,12 +1,12 @@
 package Logic
 
 import Gui.{Drawable, ImageLoader, KeyPolling}
-import Logic.PlayerBoat.speedChangePerSec
+import Logic.PlayerBoat.{reloadTime, speedChangePerSec}
 import Logic.Projectile.{AddProjectileSubject, Projectile}
 import scalafx.scene.Node
 import scalafx.scene.image.ImageView
 
-import scala.math.{max, min, sqrt}
+import scala.math.{asin, max, min, pow, sqrt, toDegrees}
 
 object PlayerBoat {
   val steerDeflectionSpeed = 30.0 //degrees per second
@@ -18,12 +18,14 @@ object PlayerBoat {
   val maxBackwardSpeed: Double = -1.0
   val projectileSpeed: Double = 8.2137
   val projectileDamage = 34
+  val reloadTime = 1.0
 }
 
 
-class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerControlsKeymap, var speed: Double = PlayerBoat.startingSpeed,
+class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerControlsKeymap,var speed: Double,
                  var heading: Double, var position: Vector2d, private var steerDeflection: Double = 0.0,
-                 private var HP: Int = PlayerBoat.startingHP)
+                 private var HP: Int = PlayerBoat.startingHP, private var leftCannonTimer : Long = 0,
+                 private var rightCannonTimer : Long = 0)
   extends MovableObject with Drawable with AddProjectileSubject {
 
   def handleInput(timeElapsed: Long): Unit = {
@@ -45,21 +47,19 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     if (!keyPolling.isDown(keyMap.steerRight) && !keyPolling.isDown(keyMap.steerLeft)) {
       deflectSteerNoInput(timeElapsed)
     }
-    if (keyPolling.isDown(keyMap.shootRight)) {
-      //      println("shooting right")
+    val angle = toDegrees(asin(pow(PlayerBoat.projectileSpeed,2)/(pow(PlayerBoat.projectileSpeed,2) + pow(speed,2))))
+    if (keyPolling.isDown(keyMap.shootRight) && rightCannonTimer == 0L) {
       notifyAddProjectile(new Projectile(PlayerBoat.projectileSpeed,
-        heading + 90.0,
-        position,
-        PlayerBoat.projectileDamage))
+        heading + angle, position, PlayerBoat.projectileDamage))
+      rightCannonTimer = (1e9 * PlayerBoat.reloadTime).toLong
     }
-    if (keyPolling.isDown(keyMap.shootLeft)) {
-      //      println("shooting left")
-
+    if (keyPolling.isDown(keyMap.shootLeft) && leftCannonTimer == 0L) {
       notifyAddProjectile(new Projectile(PlayerBoat.projectileSpeed,
-        heading - 90.0 + 360.0,
-        position,
-        PlayerBoat.projectileDamage))
+        heading - angle + 360.0, position, PlayerBoat.projectileDamage))
+      leftCannonTimer = (1e9 * PlayerBoat.reloadTime).toLong
     }
+    leftCannonTimer = max(leftCannonTimer-timeElapsed,0)
+    rightCannonTimer = max(rightCannonTimer-timeElapsed,0)
   }
 
   def subtractFromHP(dmg: Int): Unit = {

@@ -18,10 +18,10 @@ class MainLoop extends GuiSubject with ProjectileObserver {
                                         KeyCode.M, KeyCode.N),
                                     PlayerControlsKeymap(KeyCode.D, KeyCode.A, KeyCode.W, KeyCode.S,
                                       KeyCode.V, KeyCode.C))
-  private var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0),
-    2.0, 90.0, Vector2d(100,100), 0.0, 0),
-    new PlayerBoat(keys, playersKeymaps(1),
-      2.0, 180.0+90.0, Vector2d(700,300), 0.0, 0))
+  private var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0), Vector2d(0.05, 0.02),
+    2.0, 90.0, Vector2d(100,100), 0.0),
+    new PlayerBoat(keys, playersKeymaps(1), Vector2d(0.95-0.03, 0.02),
+      2.0, 180.0+90.0, Vector2d(700,300), 0.0))
   private var projectiles = mutable.HashSet[Projectile]()
   players.foreach(_.addAddProjectileObserver(this))
 
@@ -31,10 +31,11 @@ class MainLoop extends GuiSubject with ProjectileObserver {
   }
 
   private def checkProjectiles(): Unit = {
-    for (p <- projectiles; pl <- players){
-      if(pl.hullImage.getBoundsInParent.intersects(p.circle.getBoundsInParent) && pl != p.parent){
-        println("intersection", pl.position, p.position)
-        p.dealDmg(pl)
+    for (projectile <- projectiles; boat <- players){
+      if(boat.hullImage.getBoundsInParent.intersects(projectile.circle.getBoundsInParent) && boat != projectile.parent){
+        println("intersection", boat.position, projectile.position)
+        projectile.dealDmg(boat)
+        removeProjectileUpdate(projectile)
       }
     }
   }

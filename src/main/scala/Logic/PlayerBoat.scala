@@ -1,11 +1,15 @@
 package Logic
 
 import Gui.{Drawable, ImageLoader, KeyPolling, ScalaFXHelloWorld}
+import Logic.PlayerBoat.projectileSpeed
 import Logic.Projectile.{AddProjectileSubject, Projectile}
 import scalafx.scene.Node
+import scalafx.scene.control.Label
 import scalafx.scene.image.ImageView
+import scalafx.scene.text.{Font, FontWeight}
+import scalafx.stage.Screen
 
-import scala.math.{asin, cos, max, min, pow, sin, sqrt, toDegrees, toRadians}
+import scala.math.{asin, cos, max, min, pow, random, scalb, sin, sqrt, toDegrees, toRadians}
 
 object PlayerBoat {
   val steerDeflectionSpeed = 30.0 //degrees per second
@@ -21,11 +25,12 @@ object PlayerBoat {
 }
 
 
-class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerControlsKeymap,var speed: Double,
+class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerControlsKeymap, hudAnchor: Vector2d, var speed: Double,
                  var heading: Double, var position: Vector2d, private var steerDeflection: Double = 0.0,
                  private var HP: Int = PlayerBoat.startingHP, private var leftCannonTimer : Long = 0,
                  private var rightCannonTimer : Long = 0)
   extends MovableObject with Drawable with AddProjectileSubject {
+  var score: Int = 0
 
   def handleInput(timeElapsed: Long): Unit = {
     if (keyPolling.isDown(keyMap.backward)) {
@@ -61,8 +66,20 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     rightCannonTimer = max(rightCannonTimer-timeElapsed,0)
   }
 
-  def subtractFromHP(dmg: Int): Unit = {
-    HP -= dmg
+  def randomize_position(): Unit = {
+    position = Vector2d(random()*ScalaFXHelloWorld.stage.getWidth, random()*ScalaFXHelloWorld.stage.getHeight)
+  }
+
+  def receiveDamage(projectile: Projectile): Unit = {
+    HP -= projectile.dmg
+    if(HP < 0)
+    {
+      HP = PlayerBoat.startingHP
+      randomize_position()
+      heading = random()*360.0
+      steerDeflection = 0
+      projectile.parent.score += 1
+    }
   }
 
   private def nanoSecondIntoSecond(nanoTime: Long): Double = {
@@ -113,10 +130,13 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
   private val steeringRudder = new ImageView(ImageLoader.getImage("src/main/resources/lightsaber.png"))
   steeringRudder.scaleX = 0.2
   steeringRudder.scaleY = 0.2
-
+  private val scoreLabel: Label = new Label
+  scoreLabel.layoutX = ScalaFXHelloWorld.stage.getWidth * hudAnchor.x
+  scoreLabel.layoutY = ScalaFXHelloWorld.stage.getHeight * hudAnchor.y
+  scoreLabel.setFont(Font("arial", FontWeight.Bold, 40.2137))
 
   override def getNodes: List[Node] = {
-    List[Node](hullImage, steeringRudder)
+    List[Node](hullImage, steeringRudder, scoreLabel)
   }
 
   override def refresh(): Unit = {
@@ -126,6 +146,7 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     steeringRudder.x = position.x - steeringRudder.getImage.getWidth  / 2 + hullImage.getScaleY * hullImage.getImage.getHeight / 2 * sin(toRadians(-heading))
     steeringRudder.y = position.y - steeringRudder.getImage.getHeight / 2 + hullImage.getScaleY * hullImage.getImage.getHeight / 2 * cos(toRadians(-heading))
     steeringRudder.setRotate(heading-steerDeflection+180)
+    scoreLabel.text = score.toString
   }
 
   refresh()

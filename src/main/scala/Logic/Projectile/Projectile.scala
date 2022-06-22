@@ -8,7 +8,7 @@ import scalafx.scene.shape.Circle
 class Projectile (var speed: Double, var heading: Double, var position: Vector2d, var dmg: Int,
                   var parent: PlayerBoat) extends MovableObject with Drawable {
   def dealDmg(playerBoat: PlayerBoat): Unit ={
-    playerBoat.subtractFromHP(dmg)
+    playerBoat.receiveDamage(this)
   }
   val circle: Circle = new Circle()
   circle.scaleX = 10

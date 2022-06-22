@@ -1,13 +1,11 @@
 package Logic
 
-import Gui.KeyPolling
-import Logic.PlayerBoat.{speedChangePerSec, steerDeflectionSpeed}
 import Gui.{Drawable, ImageLoader, KeyPolling}
+import Logic.PlayerBoat.speedChangePerSec
 import scalafx.scene.Node
-import scalafx.scene.image.{Image, ImageView}
-import scalafx.scene.input.KeyCode
+import scalafx.scene.image.ImageView
 
-import scala.math.{cos, max, min, sin, sqrt, toRadians}
+import scala.math.{max, min, sqrt}
 
 object PlayerBoat {
   val steerDeflectionSpeed = 30.0 //degrees per second
@@ -39,7 +37,7 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
       if (keyPolling.isDown(keyMap.steerRight)) {
         deflectSteerRight(timeElapsed)
       }
-      println(steerDeflection)
+//      println(steerDeflection)
       if (!keyPolling.isDown(keyMap.steerRight) && !keyPolling.isDown(keyMap.steerLeft)) {
         deflectSteerNoInput(timeElapsed)
       }
@@ -66,7 +64,7 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
       } else if (speed < 0) {
         heading -= steerDeflection * nanoSecondIntoSecond(nanoTimeElapsed) * sqrt(-speed)
       }
-      println(heading)
+//      println(heading)
     }
 
 
@@ -100,7 +98,7 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
     hullImage.scaleY = 0.2
 
 
-    override def getNodes(): List[Node] = {
+    override def getNodes: List[Node] = {
       List[Node](hullImage)
     }
 

@@ -6,7 +6,7 @@ import scalafx.scene.input.KeyCode
 import scalafx.Includes._
 
 
-class MainLoop extends Subject[MainLoop] {
+class MainLoop extends GuiSubject {
   val keys: KeyPolling = KeyPolling.getInstance
   var lastUpdateTime: Long = System.nanoTime()
 
@@ -15,8 +15,10 @@ class MainLoop extends Subject[MainLoop] {
   var players: Array[PlayerBoat] = Array[PlayerBoat](new PlayerBoat(keys, playersKeymaps(0),
     2.0, 90.0, Vector2d(100,100), 0.0, 0))
 
+
   def init(scene: Scene): Unit = {
     keys.pollScene(scene)
+    players.foreach(player => notifyAddDrawable(player))
   }
 
 
@@ -27,7 +29,7 @@ class MainLoop extends Subject[MainLoop] {
       lastUpdateTime = now
       players.foreach(_.handleInput(timeElapsed))
       players.foreach(_.calcPosition(timeElapsed))
-      notifyObservers(this)
+      notifyRefresh()
     }
   }
 }

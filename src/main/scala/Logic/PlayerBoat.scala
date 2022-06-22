@@ -39,7 +39,6 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
       if (keyPolling.isDown(keyMap.steerRight)) {
         deflectSteerRight(timeElapsed)
       }
-      println(steerDeflection)
       if (!keyPolling.isDown(keyMap.steerRight) && !keyPolling.isDown(keyMap.steerLeft)) {
         deflectSteerNoInput(timeElapsed)
       }
@@ -66,7 +65,6 @@ class PlayerBoat (private val keyPolling: KeyPolling, private val keyMap: Player
       } else if (speed < 0) {
         heading -= steerDeflection * nanoSecondIntoSecond(nanoTimeElapsed) * sqrt(-speed)
       }
-      println(heading)
     }
 
 

@@ -6,7 +6,7 @@ import Logic.Projectile.{AddProjectileSubject, Projectile}
 import scalafx.scene.Node
 import scalafx.scene.image.ImageView
 
-import scala.math.{max, min, sqrt}
+import scala.math.{cos, max, min, sin, sqrt, toRadians}
 
 object PlayerBoat {
   val steerDeflectionSpeed = 30.0 //degrees per second
@@ -105,19 +105,25 @@ class PlayerBoat(private val keyPolling: KeyPolling, private val keyMap: PlayerC
     steerDeflection
   }
 
-  var hullImage: ImageView = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
+  val hullImage: ImageView = new ImageView(ImageLoader.getImage("src/main/resources/hull.png"))
   hullImage.scaleX = 0.2
   hullImage.scaleY = 0.2
+  private val steeringRudder = new ImageView(ImageLoader.getImage("src/main/resources/lightsaber.png"))
+  steeringRudder.scaleX = 0.2
+  steeringRudder.scaleY = 0.2
 
 
   override def getNodes: List[Node] = {
-    List[Node](hullImage)
+    List[Node](hullImage, steeringRudder)
   }
 
   override def refresh(): Unit = {
     hullImage.x = position.x - hullImage.getImage.getWidth  / 2
     hullImage.y = position.y - hullImage.getImage.getHeight / 2
     hullImage.setRotate(heading)
+    steeringRudder.x = position.x - steeringRudder.getImage.getWidth  / 2 + hullImage.getScaleY * hullImage.getImage.getHeight / 2 * sin(toRadians(-heading))
+    steeringRudder.y = position.y - steeringRudder.getImage.getHeight / 2 + hullImage.getScaleY * hullImage.getImage.getHeight / 2 * cos(toRadians(-heading))
+    steeringRudder.setRotate(heading-steerDeflection+180)
   }
 
   refresh()
